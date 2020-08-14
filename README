@@ -1,0 +1,53 @@
+RSEARCH version 1.1
+
+Installation instructions for RSEARCH are in INSTALL.  The license is
+in LICENSE.
+
+The command syntax for RSEARCH is as follows:
+    rsearch [options] <query> <target>
+
+<query> is the structured RNA query file, in Stockholm format
+(described in detail at 
+	   http://www.cgr.ki.se/cgr/groups/sonnhammer/Stockholm.html 
+Secondary structure base pairs are represented using '>' for the
+opening nucleotide and '<' for the closing nucleotide.
+Example query sequences are given in the examples subdirectory.
+
+<target> is the target database in FASTA format.
+
+The following options are commonly used:
+    -h	      list all available options
+    -c	      also search reverse complement strand
+    -n N      Take N random sequences to determine extreme value
+	      distribution paramaters.  (I usually use -n 1000)
+    -s N      Use cutoff score of N (default 0)
+    -E N      Use cutoff e-value of N (default is to use score cutoff)
+    --noalign Don't report alignments between query and target.  This
+	      can save time, especially when 
+    --partition N[,M]...     Use partition points of N,M,... to
+			     get different values for lambda and K
+			     based on G+C content
+
+
+If you are using the MPI version, the command is
+mpirsearch [options] <query> <target>
+
+You of course need to run this binary using "mpirun."  For instance, 
+running under the LAM implementation of MPI might look like:
+
+mpirun C mpirsearch query.stk target.fa
+
+The most common command I use would be something like
+
+rsearch -n 1000 -c -E 10 query.stk database
+
+to search the RNA sequence in query.stk against both strands of the
+database file, using an E-value cutoff of 10.
+
+For each hit that's reported, the sequence name is prepended with > at the
+beginning of the line for easy grepping.  Positions in the query and target
+are reported, along with scores and (if appropriate) E-values.  
+
+Robert J. Klein
+rjklein@genetics.wustl.edu
+April 8, 2003
